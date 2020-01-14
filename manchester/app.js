@@ -9,4 +9,4 @@ http.createServer(app).listen(port);
 
 app.get('/', function (req, res) {
   res.sendFile("splash.html", {root: "./public"});
-})
+});
