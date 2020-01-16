@@ -29,10 +29,13 @@ wss.on("connection", function(ws) {
 
 server.listen(port);
 
-
-
 app.get('/javascripts/logic.js', function (req, res) {
   res.sendFile("/javascripts/logic.js", {root: "./public"});
+});
+
+
+app.get('/game.html', function (req, res) {
+  res.sendFile("game.html", {root: "./public"});
 });
 
 app.get('/', function (req, res) {
