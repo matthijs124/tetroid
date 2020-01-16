@@ -17,17 +17,26 @@ var numClients = {
 
 wss.on("connection", function(ws) {
 
+    ws.on("message", function incoming(message) {
+      console.log(message);
+      if (JSON.parse(message).type === "buttonClick") {
+        numClients.value++;
+      }
 
-    numClients.value++;
+      if (JSON.parse(message).type === "player") {
+        ws.send(message);
+      }
+    });
 
     if (numClients.value > 1) {
       ws.send("2 players are connected.");
     }
+
     else {
       ws.send("waiting for player");
     }
 
-    // bunch of theoretical bullshit below this -- Mr. Krebbers
+    // bunch of _theoretical_ bullshit below this -- Mr. Krebbers
     ws.on("message", function incoming(message) {
         console.log("[LOG] " + message);
     });
