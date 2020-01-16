@@ -14,27 +14,33 @@ const wss = new websocket.Server({ server });
 
 // numClients global variable 
 var numClients = {
-  whatisthis: "num",
+  type: "numClients",
   value: 0
 };
 
 // executed on connection
 wss.on("connection", function(ws) {
 
-    // server receives message
+    var player = {
+      type: "player",
+      value: numClients.value 
+    }
+
+    ws.send(JSON.stringify(player));
+
+    
+    // begin: SERVER RECEIVES MESSAGE
     ws.on("message", function incoming(message) {
       
       // when a player moves from splash to game
       if (JSON.parse(message).type === "buttonClick") {
         numClients.value++;
       }
-
-      if (JSON.parse(message).type === "player") {
-        alert(message);
-        ws.send(message); // send BACK the stringified player object that was sent
-      }
-
+      
     });
+
+
+    
 
     if (numClients.value > 1) {
 
