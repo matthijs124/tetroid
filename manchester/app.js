@@ -1,3 +1,6 @@
+
+// SERVER SIDE
+
 var express = require("express");
 var http = require("http");
 var websocket = require("ws");
@@ -9,38 +12,58 @@ var server = http.createServer(app);
 
 const wss = new websocket.Server({ server });
 
-// Actual good shit below this line
+// numClients global variable 
 var numClients = {
   whatisthis: "num",
   value: 0
 };
 
+// executed on connection
 wss.on("connection", function(ws) {
 
+    // server receives message
     ws.on("message", function incoming(message) {
-      console.log(message);
+      
+      // when a player moves from splash to game
       if (JSON.parse(message).type === "buttonClick") {
         numClients.value++;
       }
 
       if (JSON.parse(message).type === "player") {
-        ws.send(message);
+        alert(message);
+        ws.send(message); // send BACK the stringified player object that was sent
       }
+
     });
 
     if (numClients.value > 1) {
-      ws.send("2 players are connected.");
+
+      var twoPlayersConnected = {
+        type: "playersConnected",
+        value: "two players are connected"
+      }
+
+      ws.send(JSON.stringify(twoPlayersConnected));
     }
 
     else {
-      ws.send("waiting for player");
+      var waitingForPlayer = {
+        type: "playersConnected",
+        value: "waiting for player"
+      }
+      
+      ws.send(JSON.stringify(waitingForPlayer));
     }
 
-    // bunch of _theoretical_ bullshit below this -- Mr. Krebbers
-    ws.on("message", function incoming(message) {
-        console.log("[LOG] " + message);
-    });
 });
+
+
+
+
+
+
+
+
 
 server.listen(port);
 

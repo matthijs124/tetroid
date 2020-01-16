@@ -1,8 +1,10 @@
+
+// CLIENT SIDE
+
 var socket = new WebSocket("ws://localhost:3000");
 
 socket.onmessage = function(event) {
 
-    document.getElementById("gameReady").innerHTML = event.data;
 
     // if (JSON.parse(event.data).whatisthis === "num") {
     //     if (JSON.parse(event.data).value === 2) {
@@ -10,8 +12,18 @@ socket.onmessage = function(event) {
     //     }
     // }
 
-    alert(event);
-    document.getElementById("player").innerHTML = "does something";
+
+    if (JSON.parse(event.data).type === "player") {
+        document.getElementById("player").innerHTML = JSON.parse(event.data).value;
+    }
+
+    if (JSON.parse(event.data).type === "playersConnected") {
+        document.getElementById("gameReady").innerHTML = JSON.parse(event.data).value;
+    }
+
+    
+    //document.getElementById("gameReady").innerHTML = event.data;
+    //document.getElementById("player").innerHTML = "does something" + event.data;
 
 }
 
@@ -21,36 +33,43 @@ socket.onmessage = function(event) {
 //     document.getElementById("hello").innerHTML = "Sending a first message to the server ...";
 // };
 
-// global variable !? ... andy would be dissapointed.
+// global variable !? ... andy would be disappointed.
 var playerId = 1;
 
-// when the game button is clicked 
+
 $(document).ready(function() {
 
+    // when the play/jouer button is clicked 
     $("button").on("click", function(event) {
-        console.log("boomer");
         
         if (playerId === 1) {
+            // create object with player = 1 (for sending)
             var player = {
                 type: "player",
                 value: 1
             }
-            playerId++;
+
+            playerId++; // increment player so that it always will be 2
+            
+            // send that stringified player = 1 object
             socket.send(JSON.stringify(player));
-        } else {
+        } 
+        
+        else {
+            // create object with player = 2 (for sending) 
             var player = {
                 type: "player",
                 value: 2
             }
+            // send that stringified player = 2 object
             socket.send(JSON.stringify(player));
         }
 
-        // alert(stringify(player));
 
+        //send that the user has clicked the Play / Jouer button
         var buttonClick = {
             type: "buttonClick"
         };
-
 
         socket.send(JSON.stringify(buttonClick));
         
