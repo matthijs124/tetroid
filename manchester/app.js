@@ -9,25 +9,23 @@ var server = http.createServer(app);
 
 const wss = new websocket.Server({ server });
 
+// Actual good shit below this line
 var numClients = {
   whatisthis: "num",
   value: 0
 };
 
 wss.on("connection", function(ws) {
+
+
     numClients.value++;
-    
-    //let's slow down the server response time a bit to make the change visible on the client side
-    setTimeout(function() {
-        console.log("Connection state: "+ ws.readyState);
-        if (numClients.value > 1) {
-          ws.send("2 players are connected.");
-        }
-        console.log("Connection state: "+ ws.readyState);
-    }, 2000);
 
-    ws.send(JSON.stringify(numClients));
-
+    if (numClients.value > 1) {
+      ws.send("2 players are connected.");
+    }
+    else {
+      ws.send("waiting for player");
+    }
 
     // bunch of theoretical bullshit below this -- Mr. Krebbers
     ws.on("message", function incoming(message) {
